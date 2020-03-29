@@ -1,0 +1,26 @@
+## arm-none-eabi-gdb -x gdbscript
+
+## Gives GDB info about where symbols are!
+##   use kernel.elf for debugging post-MMU code
+##   use pre_mmu.elf for debugging pre-MMU code
+file kernel.elf
+#file pre_mmu.elf
+#file user/salutations.elf
+
+## May not be necessary?
+set architecture arm
+
+## Connect to qemu remotely on port 9000
+target remote localhost:9000
+
+## Gets us a nice GUI
+tui enable
+layout regs
+
+## These are useful for waiting until the MMU has been setup and we're in the
+## main C function. If you debug the startup asm, you'll want to comment these
+## out and do 4 stepi instructions (to get past some firmware instructions). If
+## you want to debug processes, uncomment "break *0x20000000".
+#break *0x20000000
+break main
+continue
